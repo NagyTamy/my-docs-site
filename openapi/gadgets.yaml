@@ -1,0 +1,209 @@
+openapi: 3.0.4
+info:
+  title: Eszköznyilvántartó
+  description: |-
+    Az eszköznyilvántartó célja, hogy a választékban elérhető elektronikus eszközöket rendszerezett, könnyen szűrhető és kereshető, egyszerűen frissíthető, mindig naprakész formában, akár távolról is hozzáférhető helyen kezeljük.
+  version: 1.0.0
+servers:
+  - url: https://fiktiv.eszköznyilvantarto.hu
+tags:
+  - name: Eszközök
+    description: Minden az eszközeidről
+
+paths:
+  /eszkozok:
+    post:
+      tags:
+        - Eszközök
+      summary: Új eszköz létrehozása
+      description: |-
+        Hozz létre új eszközt a rendszerben.
+      operationId: addDevice
+      requestBody:
+        description: Új eszköz létrehozása
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
+      responses:
+        '201':
+          description: Eszköz sikeresen létrehozva
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          description: Érvénytelen bevitel - a kérési adat formátuma nem megfelelő
+        default:
+          description: Nem várt hiba történt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+      security:
+        - devices_auth:
+            - write:devices
+            - read:devices
+    get:
+      tags:
+        - Eszközök
+      summary: Eszközök keresése
+      description: |-
+        Az összes eszköz lekérése, eszközök keresése, szűrése egy vagy több szempont alapján.
+      operationId: findDevices
+      parameters:
+        - in: query
+          name: tipus
+          schema:
+            type: string
+            enum: [Okosotthon, Viselhető, Audio, Egyéb]
+          required: false
+          description: Eszköz típusa
+        - in: query
+          name: gyarto
+          schema:
+            type: string
+          required: false
+          description: Eszköz gyártója
+        - in: query
+          name: raktaron
+          schema:
+            type: boolean
+          required: false
+          description: Eszköz raktáron (true) vagy nem elérhető raktáron (false)
+      responses:
+        '200':
+          description: Eszközlekérdezés sikeres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+        default:
+          description: Nem várt hiba történt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+      security:
+        - devices_auth:
+            - read:devices
+  /eszkozok/{eszkozId}:
+    get:
+      tags:
+        - Eszközök
+      summary: Eszköz lekérése
+      description: |-
+        Kiválasztott eszköz lekérése annak azonosítója (UUID) alapján
+      operationId: getDevice
+      parameters:
+        - in: path
+          name: eszkozId
+          schema:
+            type: string
+          required: true
+          description: Eszközazonosító (UUID)
+      responses:
+        '200':
+          description: Eszközlekérdezés sikeres
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          description: Érvénytelen azonosító - nem található eszköz a megadott azonosítóval
+        default:
+          description: Nem várt hiba történt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+      security:
+        - devices_auth:
+            - read:devices
+
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          example: uuid-1234-abcd-5678
+          readOnly: true
+        nev:
+          type: string
+          example: Szuper Okos Kütyü
+        gyarto:
+          type: string
+          example: Tech Kft.
+        tipus:
+          type: string
+          enum: [Okosotthon, Viselhető, Audio, Egyéb]
+          example: Okosotthon
+        ar:
+          type: number
+          example: 150.99
+        raktaron:
+          type: boolean
+          example: true
+        utolsoFrissites:
+          type: string
+          format: date-time
+          example: 2025-04-27T20:00:00Z
+          readOnly: true
+      required: [nev, gyarto, tipus, raktaron]
+    ServerError:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 500
+        message:
+          type: string
+          example: A szerver nem várt hibába ütközött.
+      required:
+        - code
+        - message
+  requestBodies:
+    Device:
+      description: Tárolandó eszköz
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Device'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Device'
+  securitySchemes:
+    devices_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://fiktiv.eszköznyilvantarto.hu/oauth/authorize
+          scopes:
+            "write:devices": Eszközök hozzáadása és módosítása
+            "read:devices": Eszközök lekérdezése
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
