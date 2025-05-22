@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -17,14 +17,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: yarn
+          cache: npm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm install
       - name: Build API Docs
-        run: yarn docusaurus gen-api-docs all
+        run: npm run docusaurus gen-api-docs all
       - name: Build website
-        run: yarn build
+        run: npm build
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
