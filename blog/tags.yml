@@ -17,3 +17,8 @@ hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+
+experience:
+  label: Experiences and reviews
+  permalink: /experience
+  description: Experiences and reviews of software solutions for your every day work
