@@ -15,15 +15,15 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://NagyTamy.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/my-docs-site/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'NagyTamy', // Usually your GitHub org/user name.
+  projectName: 'my-docs-site', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
@@ -70,7 +70,7 @@ const config = {
         docsPluginId: 'classic',
         config: {
           gadgets: {  // Egyedi azonosító az API doksinak
-            specPath: 'openapi/gadgets.yaml', // Az OpenAPI fájl elérési útja
+            specPath: 'openapi/gadgets.yml', // Az OpenAPI fájl elérési útja
             outputDir: 'docs/gadgets', // A generált Markdown fájlok helye
             sidebarOptions: {
               groupPathsBy: 'tag',  // Csoportosítás tagek alapján az oldalsávban
