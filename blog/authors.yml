@@ -8,6 +8,11 @@ yangshun:
     x: yangshunz
     github: yangshun
 
+tara:
+  name: Tamara Nagy
+  title: Full Stack Engineer @ Finato Solutions
+  page: true
+
 slorber:
   name: Sébastien Lorber
   title: Docusaurus maintainer
